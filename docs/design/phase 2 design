@@ -1,0 +1,37 @@
+
+
+**1. Advanced User Profile Management**
+
+Functional Requirements:
+
+- FR1.1: The system should allow users to edit their profile information.
+- FR1.2: The system should allow users to add a profile picture.
+
+User Stories:
+
+- US1.1: As a user, I want to edit my profile information so that I can keep my information up-to-date.
+- US1.2: As a user, I want to add a profile picture so that my profile is personalized.
+
+**2. Item Request System**
+
+Functional Requirements:
+
+- FR2.1: The system should allow users to request specific items they need.
+- FR2.2: The system should notify the user when their requested item becomes available in the marketplace.
+
+User Stories:
+
+- US2.1: As a user, I want to request specific items that I need but are not currently available in the marketplace.
+- US2.2: As a user, I want to receive notifications when my requested item becomes available in the marketplace.
+
+**3. Advanced Notification System**
+
+Functional Requirements:
+
+- FR3.1: The system should allow users to opt-in to receive notifications for specific categories of items.
+
+User Stories:
+
+- US3.1: As a user, I want to opt-in to receive notifications for specific categories of items that I'm interested in.
+
+
