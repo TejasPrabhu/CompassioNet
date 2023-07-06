@@ -12,3 +12,10 @@ def is_duplicate_email(email):
     records = fetch_query(sql_select_query, (email,))
     if records:
         return True
+
+
+def get_user_by_email(email):
+    sql_select_query = "SELECT * FROM users WHERE email = %s"
+    records = fetch_query(sql_select_query, (email,))
+    if records:
+        return records[0]
