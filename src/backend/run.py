@@ -2,6 +2,7 @@ import os
 from backend import create_app
 from backend.config import DevelopmentConfig, ProductionConfig
 
+
 if os.getenv("FLASK_ENV") == "production":
     app = create_app(ProductionConfig)
 else:

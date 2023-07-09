@@ -1,10 +1,24 @@
 import os
+import sys
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from dotenv import load_dotenv
+
+# Load the .env file
+load_dotenv()
 
 
 def create_app(config):
+    # Get the path to the root directory of the project
+    ROOT_PATH = os.path.abspath(os.path.dirname(__file__))
+    PARENT_PATH = os.path.dirname(ROOT_PATH)
+
+    # print(os.environ.get("DB_HOST"))
+
+    # Add the root directory to the Python path
+    sys.path.append(PARENT_PATH)
+
     app = Flask(__name__)
     # TODO: retrive a list of allowed hosts from config file
     CORS(app)
@@ -24,6 +38,10 @@ def create_app(config):
     from backend.auth import auth as auth_blueprint
 
     app.register_blueprint(auth_blueprint)
+
+    from backend.user import user as user_blueprint
+
+    app.register_blueprint(user_blueprint)
 
     # print(app.blueprints.keys)
 
