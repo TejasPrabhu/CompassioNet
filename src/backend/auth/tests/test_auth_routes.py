@@ -20,27 +20,9 @@ def extract_cookie_value(cookies, cookie_name):
     return None
 
 
-# def test_register(client):
-#     data = {
-#         "name": "Johny Doey",
-#         "password": "password",
-#         "repeatpassword": "password",
-#         "email": "johny@example.com",
-#         "city": "New York",
-#         "zipcode": "12345",
-#     }
-#     response = client.post("/register", json=data)
-#     assert response.status_code == 201
-#     assert response.json["status"] == 201
-#     assert (
-#         response.json["message"]
-#         == "Your registration request has been received. Please check your email for further instructions."
-#     )
-
-
 def test_login(client):
     data = {"email": "john@example.com", "password": "password1"}
-    response = client.post("/login", json=data)
+    response = client.post("/auth/login", json=data)
     assert response.status_code == 200
     assert response.json["login"] is True
     assert response.json["message"] == "Logged in successfully"
@@ -68,7 +50,7 @@ def test_login(client):
 
 
 def test_logout(client):
-    response = client.post("/logout")
+    response = client.post("/auth/logout")
     assert response.status_code == 200
     assert response.json["logout"] is True
     assert response.json["message"] == "Logged out successfully"
@@ -85,7 +67,7 @@ def test_logout(client):
 
 def test_refresh(client):
     data = {"email": "john@example.com", "password": "password1"}
-    login_response = client.post("/login", json=data)
+    login_response = client.post("/auth/login", json=data)
     cookies = login_response.headers.getlist("Set-Cookie")
     access_token_cookie = extract_cookie_value(cookies, "access_token_cookie")
 
@@ -94,7 +76,7 @@ def test_refresh(client):
         "X-CSRF-TOKEN": "csrf_refresh_token",
     }
 
-    response = client.post("/refresh", headers=headers)
+    response = client.post("/auth/refresh", headers=headers)
     assert response.status_code == 200
     assert response.json["refresh"] is True
     assert response.json["message"] == "Access token refreshed"
