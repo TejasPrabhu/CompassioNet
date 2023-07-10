@@ -3,6 +3,7 @@ import time
 import sys
 import psycopg2
 from psycopg2 import pool
+from psycopg2 import extras
 from .logger_config import logger
 
 # You might want to move these credentials to a configuration file
@@ -62,7 +63,7 @@ def release_connection(conn):
     return connection_pool.putconn(conn)
 
 
-def execute_query(query, params):
+def execute_query(query, params, return_value=False):
     try:
         conn = get_connection()
     except psycopg2.DatabaseError as error:
@@ -73,6 +74,9 @@ def execute_query(query, params):
         cursor = conn.cursor()
         cursor.execute(query, params)
         conn.commit()
+        if return_value == True:
+            return cursor.fetchone()
+
     except Exception as e:
         logger.error(f"Error executing query: {e}", exc_info=True)
         conn.rollback()
@@ -92,7 +96,7 @@ def fetch_query(query, params):
         sys.exit(1)
 
     try:
-        cursor = conn.cursor()
+        cursor = conn.cursor(cursor_factory=extras.RealDictCursor)
         cursor.execute(query, params)
         result = cursor.fetchall()
     except Exception as error:
