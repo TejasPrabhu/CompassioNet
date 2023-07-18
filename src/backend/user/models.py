@@ -23,7 +23,8 @@ def add_user(name, password, email, city, zipcode, verification_secret):
     sql_insert_query = """INSERT INTO users (name, password, email, city, zipcode, verification_secret)
                         VALUES (%s, %s, %s, %s, %s, %s)"""
     return execute_query(
-        sql_insert_query, (name, password, email, city, zipcode, verification_secret)
+        sql_insert_query,
+        (name, password, email, city, zipcode, verification_secret),
     )
 
 
@@ -39,7 +40,7 @@ def get_user_id_by_email(email):
     sql_select_query = "SELECT * FROM users WHERE email = %s"
     records = fetch_query(sql_select_query, (email,))
     if records:
-        return records[0][0]
+        return records[0]["id"]
     return None
 
 
@@ -84,7 +85,9 @@ def delete_user_interests(user_id):
 
 def get_email_from_verification_token(token):
     sql_select_query = "SELECT email FROM users WHERE verification_secret = %s"
+    print(token)
     records = fetch_query(sql_select_query, (token,))
+    print(records)
     if records:
         return records[0]
     return None

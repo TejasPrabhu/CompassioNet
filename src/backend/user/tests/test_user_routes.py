@@ -31,7 +31,7 @@ def test_register(client):
 
 
 def test_get_profile(client):
-    user_id = get_user_by_email("testuser@example.com")[0]
+    user_id = get_user_by_email("testuser@example.com")["id"]
     response = client.get(f"/user/{user_id}")
     assert response.status_code == 200
     assert response.json["status"] == 200
@@ -39,7 +39,7 @@ def test_get_profile(client):
 
 
 def test_update_profile(client):
-    user_id = get_user_by_email("testuser@example.com")[0]
+    user_id = get_user_by_email("testuser@example.com")["id"]
     data = {
         "name": "John Smith",
         "city": "San Francisco",
@@ -53,7 +53,7 @@ def test_update_profile(client):
 
 
 def test_delete_profile(client):
-    user_id = get_user_by_email("testuser@example.com")[0]
+    user_id = get_user_by_email("testuser@example.com")["id"]
     response = client.delete(f"/user/{user_id}")
     assert response.status_code == 200
     assert response.json["status"] == 200
