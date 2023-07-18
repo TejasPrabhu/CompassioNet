@@ -6,5 +6,5 @@ def check_invalid_credentials(email, password):
     user = get_user_by_email(email)
     if not user:
         return True
-    password_match = check_password_hash(user[3], password)
+    password_match = check_password_hash(user["password"], password)
     return not password_match

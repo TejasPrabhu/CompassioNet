@@ -15,98 +15,9 @@ from .utils import check_invalid_credentials
 from backend.db import fetch_query
 
 
-class UserSchema(Schema):
-    name = fields.Str(required=True)
-    password = fields.Str(required=True, validate=validate.Length(min=6))
-    repeatpassword = fields.Str(required=True, validate=validate.Length(min=6))
-    email = fields.Email(required=True)
-    city = fields.Str(required=True)
-    zipcode = fields.Str(required=True)
-
-
-user_schema = UserSchema()
-
-
-@auth.route("/register", methods=["POST"])
-def register():
-    data = request.json
-    errors = user_schema.validate(data)
-    if errors:
-        return (
-            jsonify(
-                {
-                    "status": 400,
-                    "data": {},
-                    "message": "Invalid input data. Please check and try again.",
-                    "errors": errors,
-                }
-            ),
-            400,
-        )
-
-    password = data.get("password")
-    repeat_password = data.get("repeatpassword")
-
-    # Hash password
-    hashed_password = generate_password_hash(password)
-
-    # if generate_password_hash(repeat_password) != hashed_password:
-    if repeat_password != password:
-        return (
-            jsonify(
-                {
-                    "status": 400,
-                    "data": {},
-                    "message": "Invalid input data. Please check and try again.",
-                }
-            ),
-            400,
-        )
-
-    email = data.get("email")
-    check = is_duplicate_email(email)
-    if check:
-        return (
-            jsonify(
-                {
-                    "status": 500,
-                    "data": {},
-                    "message": "Internal Server Error. Please try again later.",
-                }
-            ),
-            500,
-        )
-
-    name = data.get("name")
-    city = data.get("city")
-    zipcode = data.get("zipcode")
-
-    check = add_user(name, hashed_password, email, city, zipcode)
-    if check:
-        return (
-            jsonify(
-                {
-                    "status": 201,
-                    "data": data,
-                    "message": "Your registration request has been received. Please check your email for further instructions.",
-                }
-            ),
-            201,
-        )
-    return (
-        jsonify(
-            {
-                "status": 500,
-                "data": {},
-                "message": "Internal Server Error. Please try again later.",
-            }
-        ),
-        500,
-    )
-
-
 @auth.route("/login", methods=["POST"])
 def login():
+    print("we are inside login")
     data = request.json
 
     email = data.get("email")
@@ -148,6 +59,7 @@ def login():
 
 @auth.route("/logout", methods=["POST"])
 def logout():
+    print("we are inside logout")
     response = make_response(
         jsonify({"logout": True, "message": "Logged out successfully"}), 200
     )
@@ -159,6 +71,7 @@ def logout():
 @auth.route("/refresh", methods=["POST"])
 @jwt_required(refresh=True)
 def refresh():
+    print("we are inside refresh")
     current_user = get_jwt_identity()
     access_token = create_access_token(
         identity=current_user, expires_delta=timedelta(minutes=15)
