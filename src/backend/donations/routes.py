@@ -101,5 +101,4 @@ def get_all_donations_received_by_user(recipient_id):
             ),
             200,
         )
-    else:
-        return jsonify({"status": 404, "message": "No items received"}), 404
+    return jsonify({"status": 404, "message": "No items received"}), 404

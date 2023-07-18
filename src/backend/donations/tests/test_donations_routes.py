@@ -10,16 +10,35 @@ from backend.donations.models import (
     delete_donation_by_id,
     get_all_donations_received_by_user_model,
 )
+from backend.products.models import add_product, delete_product_by_id
 
 create_data = {
     "item_id": 1,
     "recipient_id": 1,
+    "bid_quantity": 1,
 }
 
 update_data = {
     "item_id": 2,
     "recipient_id": 2,
 }
+
+create_product_data = {
+    "item_name": "Test Product",
+    "quantity": 10,
+    "description": "This is a test product.",
+    "category_id": 1,
+    "donor_id": 1,
+    "img_url": "https://example.com/image.jpg",
+}
+
+
+@pytest.fixture
+def created_product_id(client):
+    add_product(create_product_data)
+    create_data["item_id"] = get_current_id_value()[0]
+    yield
+    delete_product_by_id(create_data["item_id"])
 
 
 @pytest.fixture
@@ -43,14 +62,14 @@ def client():
     return app.test_client()
 
 
-def test_create_donation(client, delete_donation_id):
+def test_create_donation(client, created_product_id, delete_donation_id):
     response = client.post("/donations/", json=create_data)
     assert response.status_code == 201
     assert response.json["status"] == 201
     assert response.json["message"] == "Donation created"
 
 
-def test_get_donation(client, created_donation_id):
+def test_get_donation(client, created_product_id, created_donation_id):
     response = client.get(f"/donations/{created_donation_id}")
     assert response.status_code == 200
     assert response.json["status"] == 200
@@ -58,21 +77,23 @@ def test_get_donation(client, created_donation_id):
     assert "donation" in response.json
 
 
-def test_update_donation(client, created_donation_id):
+def test_update_donation(client, created_product_id, created_donation_id):
     response = client.put(f"/donations/{created_donation_id}", json=update_data)
     assert response.status_code == 200
     assert response.json["status"] == 200
     assert response.json["message"] == "Donation updated"
 
 
-def test_delete_donation(client, created_donation_id):
+def test_delete_donation(client, created_product_id, created_donation_id):
     response = client.delete(f"/donations/{created_donation_id}")
     assert response.status_code == 200
     assert response.json["status"] == 200
     assert response.json["message"] == "Donation deleted"
 
 
-def test_get_all_donations_received_by_user(client, created_donation_id):
+def test_get_all_donations_received_by_user(
+    client, created_product_id, created_donation_id
+):
     recipient_id = create_data["recipient_id"]
     response = client.get(f"/donations/received/{recipient_id}")
     assert response.status_code == 200
